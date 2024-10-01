@@ -33,6 +33,12 @@ jobs:
       run: |
         terraform apply -auto-approve tfplan
 
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v1
+
+    - name: Install Helm
+      uses: azure/setup-helm@v1
+
     - name: Terraform Output
       working-directory: Terraform
       run: |
@@ -42,12 +48,6 @@ jobs:
       run: |
         az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
         az aks get-credentials --resource-group origenAI --name origenAI-JoseAcosta-aks
-
-    - name: Install kubectl
-      uses: azure/setup-kubectl@v1
-
-    - name: Install Helm
-      uses: azure/setup-helm@v1
 
     - name: Install Ingress
       run: |
