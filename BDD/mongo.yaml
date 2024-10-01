@@ -12,6 +12,10 @@ spec:
       labels:
         app: mongodb
     spec:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
       containers:
       - name: mongodb
         image: mongo
@@ -30,13 +34,29 @@ spec:
             secretKeyRef:
               name: mongodb-secrets
               key: MONGO_INITDB_ROOT_PASSWORD
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+              - ALL
+            add:
+              - NET_BIND_SERVICE
+              - CHOWN
+              - FOWNER
+              - SETGID
+              - SETUID
         volumeMounts:
         - name: mongodb-data
           mountPath: /data/db
+        - name: tmp
+          mountPath: /tmp
       volumes:
       - name: mongodb-data
         persistentVolumeClaim:
           claimName: mongodb-pvc
+      - name: tmp
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
