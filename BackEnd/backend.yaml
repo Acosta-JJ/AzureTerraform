@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: backend
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: backend
@@ -38,6 +38,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backend
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   selector:
     app: backend
@@ -45,3 +47,4 @@ spec:
     - protocol: TCP
       port: 3001
       targetPort: 3001
+  type: LoadBalancer
