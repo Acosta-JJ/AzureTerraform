@@ -1,4 +1,4 @@
-name: Deploy AKS and Apply Kubernetes Manifests
+name: Deploy AKS
 
 on:
   workflow_dispatch:
