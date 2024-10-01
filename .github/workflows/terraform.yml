@@ -19,19 +19,24 @@ jobs:
       uses: hashicorp/setup-terraform@v1
 
     - name: Terraform Init
+      working-directory: Terraform
       run: |
-        cd Terraform
         terraform init
 
     - name: Terraform Plan
+      working-directory: Terraform
       run: |
-        cd Terraform
         terraform plan -out=tfplan
 
     - name: Terraform Apply
+      working-directory: Terraform
       run: |
-        cd Terraform
         terraform apply -auto-approve tfplan
+
+    - name: Terraform Output
+      working-directory: Terraform
+      run: |
+        terraform output -raw kube_config > $HOME/.kube/config
 
     - name: Get AKS Credentials
       run: |
