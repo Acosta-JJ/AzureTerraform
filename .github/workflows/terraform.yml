@@ -1,0 +1,55 @@
+name: Deploy AKS and Apply Kubernetes Manifests
+
+on:
+  workflow_dispatch:
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Terraform Init
+      run: |
+        cd Terraform
+        terraform init
+
+    - name: Terraform Plan
+      run: |
+        cd Terraform
+        terraform plan -out=tfplan
+
+    - name: Terraform Apply
+      run: |
+        cd Terraform
+        terraform apply -auto-approve tfplan
+
+    - name: Get AKS Credentials
+      run: |
+        az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+        az aks get-credentials --resource-group origenAI --name origenAI-JoseAcosta-aks
+
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v1
+
+    - name: Install Helm
+      uses: azure/setup-helm@v1
+
+    - name: Install Ingress
+      run: |
+        helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+        helm repo update
+        helm install nginx-ingress ingress-nginx/ingress-nginx
+
+    - name: Apply Kubernetes manifests
+      run: |
+        kubectl apply -f . --recursive
