@@ -12,14 +12,30 @@ spec:
       labels:
         app: frontend
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
       containers:
       - name: frontend
         image: origenai/cloud-engineer-test-sample-app-frontend:1.0.0
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
         env:
         - name: REACT_APP_API_URL
           value: "/api"
         ports:
         - containerPort: 3000
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+        - name: cache
+          mountPath: /app/node_modules/.cache
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      - name: cache
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
