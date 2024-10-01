@@ -51,14 +51,18 @@ jobs:
       working-directory: Terraform
       run: |
         mkdir -p $HOME/.kube
-        terraform output -raw kube_config > $HOME/.kube/config
+        terraform output -raw kube_config > /tmp/config
 
     - name: Install Ingress
       run: |
         helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
         helm repo update
         helm install nginx-ingress ingress-nginx/ingress-nginx
+      env:
+        KUBECONFIG: /tmp/config
 
     - name: Apply Kubernetes manifests
       run: |
         kubectl apply -f . --recursive
+      env:
+        KUBECONFIG: /tmp/config
