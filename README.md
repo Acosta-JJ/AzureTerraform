@@ -1,8 +1,8 @@
-# OrigenAI Technical Test Jose Acosta
+
 ## Deployment instructions:
-1. Go to the repository https://github.com/Acosta-JJ/OrigenAI/actions, then go to actions and run the action Deploy AKS, this will deploy the cluster and the helm chart needed for ingress
+1. Go to the repository https://github.com/Acosta-JJ/AzureTerraform/actions, then go to actions and run the action Deploy AKS, this will deploy the cluster and the helm chart needed for ingress
  2. Clone the repository:
-      git clone https://github.com/Acosta-JJ/OrigenAI.git
+      git clone https://github.com/Acosta-JJ/AzureTerraform.git
   3. Install Terraform CLI:
 Follow the [LINK](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli#install-cli) to check the guide, choose according to your S.O
 4. Once the action of step 1 is completed run the following commands `cd Terraform` and `terraform init`
